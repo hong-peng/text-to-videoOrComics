@@ -190,6 +190,8 @@ Step 4：生成漫画分镜（含对话/独白/音效/表情/格子大小）
 | 豆包 Seedream 4.0 | 云端 API，无需本地安装 | `SEEDANCE_API_KEY` |
 | 豆包 Seedream 4.5 | 云端 API，画质更优 | `SEEDANCE_API_KEY` |
 
+> **注意**：豆包系列模型（Seedream 图像 / Seedance 视频）的 API Key 均通过[火山引擎](https://www.volcengine.com/)注册获取。
+
 ## 视频生成服务商（短视频模式）
 
 通过 `DEFAULT_PROVIDER` 环境变量选择默认服务商：
