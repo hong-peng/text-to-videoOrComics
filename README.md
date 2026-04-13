@@ -10,7 +10,7 @@
 [![Claude](https://img.shields.io/badge/AI-Claude%20Opus%204-orange?logo=anthropic)](https://www.anthropic.com/)
 [![Stars](https://img.shields.io/github/stars/hong-peng/text-to-videoOrComics?style=social)](https://github.com/hong-peng/text-to-videoOrComics)
 
-[中文](#-功能概览) · [Quick Start](#-快速开始) · [FAQ](#-常见问题)
+**[中文](./README.md) · [English](./README_EN.md)**
 
 </div>
 
