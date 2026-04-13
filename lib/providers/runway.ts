@@ -1,5 +1,5 @@
-import { config } from "../config.js";
-import type { GenerateOptions, VideoJob, VideoProvider } from "./types.js";
+import { config } from "../config";
+import type { GenerateOptions, VideoJob, VideoProvider } from "./types";
 
 const BASE_URL = "https://api.dev.runwayml.com/v1";
 

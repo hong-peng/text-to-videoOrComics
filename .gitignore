@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# user generated content
+/public/uploads/
+/public/models/
+/public/videos/
+

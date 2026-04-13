@@ -1,0 +1,144 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+/// 顶层项目（系列），包含多个子项目（Part）和共享建模数据
+model Series {
+  id        String   @id @default(cuid())
+  name      String
+  /// "video"（短视频）或 "manga"（漫画）
+  type      String   @default("video")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parts           Project[]
+  characterModels CharacterModel[]
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  seriesId  String
+  series    Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  name      String
+  status    String   @default("draft")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  uploads  Upload[]
+  analyses Analysis[]
+  episodes Episode[]
+}
+
+model Upload {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  filename  String
+  filePath  String
+  fileType  String
+  rawText   String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, filename])
+}
+
+model Analysis {
+  id         String   @id @default(cuid())
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  characters Json
+  scenes     Json
+  plotPoints Json
+  createdAt  DateTime @default(now())
+}
+
+model Episode {
+  id             String   @id @default(cuid())
+  projectId      String
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  episodeNumber  Int
+  title          String?
+  scriptContent  Json
+  durationTarget Int      @default(60)
+  mergedVideoUrl String?
+  createdAt      DateTime @default(now())
+
+  shots Shot[]
+  mangaPanels MangaPanel[]
+}
+
+model Shot {
+  id          String   @id @default(cuid())
+  episodeId   String
+  episode     Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  shotNumber  Int
+  shotType    String
+  cameraMove  String
+  description String   @db.Text
+  location    String   @default("")
+  lighting    String   @default("")
+  characters  Json     @default("[]")
+  mood        String   @default("")
+  dialogue    String?  @db.Text
+  duration    Float
+  notes       String?
+  videoTaskId String?
+  videoStatus String?  @default("pending")
+  videoUrl    String?
+}
+
+/// 漫画格（漫画模式下替代 Shot）
+model MangaPanel {
+  id              String   @id @default(cuid())
+  episodeId       String
+  episode         Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  panelNumber     Int
+  /// 中文画面描述
+  description     String   @db.Text
+  /// 英文 SD 提示词
+  prompt          String   @db.Text
+  characters      Json     @default("[]")
+  mood            String   @default("")
+  /// 对话气泡台词（中文）
+  dialogue        String?  @db.Text
+  /// 内心独白/思想云（中文）
+  innerMonologue  String?  @db.Text
+  /// 音效/拟声词（中文），如"咚！""嘶..."
+  sfx             String?
+  /// 表情类型，如"震惊""愤怒""冷笑"
+  expressionType  String?
+  /// 格子尺寸权重：big / medium / small
+  panelSize       String   @default("medium")
+  /// pending / processing / completed / failed
+  imageStatus     String   @default("pending")
+  imageUrl        String?
+  createdAt       DateTime @default(now())
+}
+
+/// 角色/场景建模记录，存储在系列层级，各 Part 共享
+model CharacterModel {
+  id           String   @id @default(cuid())
+  seriesId     String
+  series       Series   @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  /// 创建该版本的 Part（子项目）ID，用于权限控制（只能删除自己 Part 创建的版本）
+  sourcePartId String?
+  /// "character" 或 "scene"
+  entityType String
+  /// 角色名或场景名
+  name       String
+  /// 同一角色的第几个版本（从 1 开始）
+  version    Int
+  /// 生成图片的 prompt（英文，供 SD 使用）
+  prompt     String   @db.Text
+  /// 图片存放路径，相对 public/，如 /models/<seriesId>/<name>_v1.png
+  imageUrl   String
+  /// 是否为当前激活版本（最新有效建模）
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  @@unique([seriesId, name, version])
+}

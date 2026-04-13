@@ -7,6 +7,10 @@ export interface GenerateOptions {
   aspectRatio?: string;
   /** Optional seed for reproducibility */
   seed?: number;
+  /** Reference image URL for image-to-video generation (single) */
+  referenceImageUrl?: string;
+  /** Multiple reference image URLs (takes precedence over referenceImageUrl) */
+  referenceImageUrls?: string[];
 }
 
 export interface VideoJob {

@@ -1,4 +1,4 @@
-import type { GenerateOptions, VideoJob, VideoProvider } from "./types.js";
+import type { GenerateOptions, VideoJob, VideoProvider } from "./types";
 
 export class KlingProvider implements VideoProvider {
   readonly name = "kling";
