@@ -1,10 +1,10 @@
 import Epub from "epub2";
+import * as fs from "fs";
 import type { ParsedContent } from "./txt";
 
 export async function parseEpub(buffer: Buffer): Promise<ParsedContent> {
   return new Promise((resolve, reject) => {
     const tmpPath = `/tmp/epub_${Date.now()}.epub`;
-    const fs = require("fs") as typeof import("fs");
     fs.writeFileSync(tmpPath, buffer);
 
     const epub = new Epub(tmpPath);

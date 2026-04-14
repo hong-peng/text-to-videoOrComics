@@ -26,7 +26,16 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    loadSeries();
+    let cancelled = false;
+    fetch("/api/series")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled) {
+          setSeries(data);
+          setLoading(false);
+        }
+      });
+    return () => { cancelled = true; };
   }, []);
 
   async function createSeries() {
